@@ -9,8 +9,12 @@ import { DhtSensorModule } from './dht-sensor/dht-sensor.module';
 import { I2cRelayModule } from './i2c-relay/i2c-relay.module';
 import { I2cRelayService } from './i2c-relay/i2c-relay.service';
 
+import { dataBaseConfig } from './database/database.config';
+import { SequelizeModule } from '@nestjs/sequelize';
+
+
 @Module({
-  imports: [DhtSensorModule, I2cRelayModule],
+  imports: [DhtSensorModule, I2cRelayModule, SequelizeModule.forRoot(dataBaseConfig)],
   controllers: [AppController],
   providers: [AppService, DhtSensorService, I2cRelayService],
 })
