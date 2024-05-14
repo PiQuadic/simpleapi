@@ -48,13 +48,13 @@ export class DhtSensorService {
         this.logger.log(`temp: ${res.temperature} deg C, humidity: ${res.humidity}%`);
         
         this.dhtSensorLogRepository.create({
-          id: 'tempsensor',
+          sensor_id: 'tempsensor',
           name: 'ambient temp',
           value: res.temperature,
         });
 
         this.dhtSensorLogRepository.create({
-          id: 'humiditysensor',
+          sensor_id: 'humiditysensor',
           name: 'ambient humidity',
           value: res.humidity,
         });

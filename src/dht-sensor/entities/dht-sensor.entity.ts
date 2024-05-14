@@ -7,12 +7,8 @@ import { DataTypes } from 'sequelize';
 
 export class DhtSensorLog extends Model {
 
-  @Column({
-    type: DataTypes.TEXT,
-    primaryKey: true
-  })
-  id: string;
-
+  @Column
+  sensor_id: string;
 
   @Column
   name: string;
@@ -25,5 +21,6 @@ export class DhtSensorLog extends Model {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW
   })
-  timestamp: Date;
+  dt: Date;
 }
+
