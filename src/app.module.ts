@@ -3,11 +3,8 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { DhtSensorService } from './dht-sensor/dht-sensor.service';
 import { DhtSensorModule } from './dht-sensor/dht-sensor.module';
-
 import { I2cRelayModule } from './i2c-relay/i2c-relay.module';
-import { I2cRelayService } from './i2c-relay/i2c-relay.service';
 
 import { dataBaseConfig } from './database/database.config';
 import { SequelizeModule } from '@nestjs/sequelize';
@@ -16,6 +13,6 @@ import { SequelizeModule } from '@nestjs/sequelize';
 @Module({
   imports: [DhtSensorModule, I2cRelayModule, SequelizeModule.forRoot(dataBaseConfig)],
   controllers: [AppController],
-  providers: [AppService, DhtSensorService, I2cRelayService],
+  providers: [AppService],
 })
 export class AppModule { }
