@@ -1,4 +1,4 @@
-import { CreatedAt, Column, Model, Table } from 'sequelize-typescript';
+import { CreatedAt, Column, Model, Table, UpdatedAt } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 
 @Table({
@@ -31,7 +31,7 @@ export class I2cRelay extends Model {
   })
   createdAt: Date;
 
-  @CreatedAt
+  @UpdatedAt
   @Column({
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW
@@ -39,3 +39,23 @@ export class I2cRelay extends Model {
   updatedAt: Date;
 }
 
+/*
+ *
+insert into relay (
+  relay_id,
+  name,
+  lastvalue,
+  lastlog,
+  enabled,
+  createdAt,
+  updatedAt
+) values (
+  'A', // A-D
+  'Switch 1', 1-4
+  'off',
+  CURRENT_TIMESTAMP,
+  1,
+  CURRENT_TIMESTAMP,
+  CURRENT_TIMESTAMP
+);
+*/

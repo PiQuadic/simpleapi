@@ -1,4 +1,5 @@
 import { Logger, Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
 import { CreateI2cRelayDto } from './dto/create-i2c-relay.dto';
 import { UpdateI2cRelayDto } from './dto/update-i2c-relay.dto';
 import { I2cRelay } from './entities/i2c-relay.entity';
@@ -15,6 +16,11 @@ type i2cFourSwitch = {
 
 @Injectable()
 export class I2cRelayService {
+
+  constructor(
+    @InjectModel(I2cRelay)
+    private I2cRelayDb: typeof I2cRelay,
+  ) {}
 
   private readonly logger = new Logger(I2cRelayService.name);
   private readonly bus = i2c.openSync(1);
@@ -78,21 +84,34 @@ export class I2cRelayService {
   }
 
   findAll() {
-    return `This action returns all i2cRelay`;
+    return this.I2cRelayDb.findAll();
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} i2cRelay`;
+  async findOne(id: string): Promise<I2cRelay> {
+    return await this.I2cRelayDb.findOne({
+      where : {
+        relay_id : id
+      }
+    });
   }
 
-  update(id: string, updateI2cRelayDto: UpdateI2cRelayDto) {
-    return `This action updates a #${id} i2cRelay`;
+  async update(id: string, updateI2cRelayDto: UpdateI2cRelayDto) {
+    if (updateI2cRelayDto.lastvalue) {
+      this.logger.log('LAST VALUE FOUND');
+    }
+    return await this.I2cRelayDb.update(
+      { ...updateI2cRelayDto },
+      {
+        where: { relay_id: id} 
+      }
+    );
   }
 
   remove(id: string) {
     return `This action removes a #${id} i2cRelay`;
   }
-  
+
+  /*
   read(relay_id:string): Promise<I2cRelayReading> {
     return new Promise((resolve, reject) => {
       this.logger.log(`Reading current status: ${relay_id}`);
@@ -128,4 +147,5 @@ export class I2cRelayService {
     console.log(readings);
     return readings;
   }
+ */
 }

@@ -25,7 +25,8 @@ export class I2cRelayController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateI2cRelayDto: UpdateI2cRelayDto) {
+  update(@Param('id') id: string, @Body() updateI2cRelayDto: Partial<UpdateI2cRelayDto>) {
+    //updateI2cRelayDto.value = 'on';
     return this.i2cRelayService.update(id, updateI2cRelayDto);
   }
 
@@ -34,6 +35,7 @@ export class I2cRelayController {
     return this.i2cRelayService.remove(id);
   }
 
+  /*
   @Get('read')
   readall(): Promise<I2cRelayReading[]> {
     return this.i2cRelayService.findAll();
@@ -54,4 +56,5 @@ export class I2cRelayController {
   log(): Promise<I2cRelayReading[]> {
     return this.i2cRelayService.log();
   }
+ */
 }
