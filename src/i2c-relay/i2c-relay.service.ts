@@ -1,11 +1,77 @@
 import { Logger, Injectable } from '@nestjs/common';
 import { CreateI2cRelayDto } from './dto/create-i2c-relay.dto';
 import { UpdateI2cRelayDto } from './dto/update-i2c-relay.dto';
+import { I2cRelay } from './entities/i2c-relay.entity';
+import { I2cRelayReading } from './entities/i2c-relay-log.entity';
+
+const i2c = require('i2c-bus');
+
+type i2cFourSwitch = {
+  A: string,
+  B: string,
+  C: string,
+  D: string
+}
 
 @Injectable()
 export class I2cRelayService {
 
   private readonly logger = new Logger(I2cRelayService.name);
+  private readonly bus = i2c.openSync(1);
+  private readonly ADDRESS = 0x27; // for this relay...
+
+  sendByteToPCF8574(byte) {
+    try {
+      this.logger.log(`Byte ${byte.toString(2).padStart(8, '0')} sent to PCF8574`);
+      this.bus.writeByteSync(this.ADDRESS, 0x00, byte);
+      this.bus.closeSync();
+      return true;
+    } catch (err) {
+      this.bus.closeSync();
+      return false;
+    }
+    // Close the I2C bus after finishing
+  }
+
+  setSwitches(switches:i2cFourSwitch):boolean {
+    // for some reason this is reversed 
+    let binAssembly = '';
+    binAssembly = (switches.A == 'on') ? '0' : '1'
+    binAssembly += (switches.B == 'on') ? '0' : '1'
+    binAssembly += (switches.C == 'on') ? '0' : '1'
+    binAssembly += (switches.D == 'on') ? '0' : '1'
+    binAssembly += '0000'; // filler
+
+    this.logger.log(binAssembly);
+    const switchCode = parseInt(binAssembly, 2);
+    this.logger.log(switchCode);
+    return this.sendByteToPCF8574(switchCode);
+  };
+
+  setI2cRelayPositionsAllOff() {
+    const switches = {
+      A: 'off',
+      B: 'off',
+      C: 'off',
+      D: 'off'
+    };
+    // Sending 0xFF will set all IO pins to LOW
+    // binaryRep '11110000' ALL off
+    this.setSwitches(switches);
+  };
+
+  setI2cRelayPositionsAllOn() {
+    const switches = {
+      A: 'on',
+      B: 'on',
+      C: 'on',
+      D: 'on'
+    };
+    // Sending 0xFF will set all IO pins to LOW
+    // binaryRep '11110000' ALL off
+    this.setSwitches(switches);
+  };
+
 
   create(createI2cRelayDto: CreateI2cRelayDto) {
     return 'This action adds a new i2cRelay';
@@ -15,29 +81,39 @@ export class I2cRelayService {
     return `This action returns all i2cRelay`;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} i2cRelay`;
   }
 
-  update(id: number, updateI2cRelayDto: UpdateI2cRelayDto) {
+  update(id: string, updateI2cRelayDto: UpdateI2cRelayDto) {
     return `This action updates a #${id} i2cRelay`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} i2cRelay`;
   }
   
-  read(): string {
-    this.logger.log('Reading current status');
-    return JSON.stringify({
-      switchA: 'off',
-      switchB: 'off',
-      switchC: 'off',
-      switchD: 'off'
+  read(relay_id:string): Promise<I2cRelayReading> {
+    return new Promise((resolve, reject) => {
+      this.logger.log(`Reading current status: ${relay_id}`);
+      // { relay_id: relay_id, name: 'switchA', value: 'on', dt: new Date() }
+      const relay = { relay_id: relay_id, name: 'switchA', value: 'on', dt: new Date() };
+      resolve(relay);
     });
   }
 
-  set(id: number, position: string): string {
+  //read_all(): Promise<I2cRelayReading[]> {
+  read_all(): string {
+    this.logger.log('Reading current status');
+    return [
+      { relay_id: '1', name: 'switchA', value: 1, dt: new Date() },
+      { relay_id: '2', name: 'switchB', value: 0, dt: new Date() },
+      { relay_id: '3', name: 'switchC', value: 0, dt: new Date() },
+      { relay_id: '4', name: 'switchD', value: 0, dt: new Date() },
+    ];
+  }
+
+  change(id: string, position: string): Promise<I2cRelayReading>{
     this.logger.log(`Switch ${id} ${position}`);
     return JSON.stringify({
       switchA: 'off',
@@ -47,9 +123,9 @@ export class I2cRelayService {
     });
   }
 
-  log(): void {
-    const reading = this.read();
-    console.log(reading);
-    return 
+  log(): Promise<I2cRelayReading[]> {
+    const readings = this.read_all();
+    console.log(readings);
+    return readings;
   }
 }

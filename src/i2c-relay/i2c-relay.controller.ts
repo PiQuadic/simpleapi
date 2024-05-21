@@ -1,5 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { I2cRelayService } from './i2c-relay.service';
+import { I2cRelay } from './entities/i2c-relay.entity';
+import { I2cRelayReading } from './entities/i2c-relay-log.entity';
 import { CreateI2cRelayDto } from './dto/create-i2c-relay.dto';
 import { UpdateI2cRelayDto } from './dto/update-i2c-relay.dto';
 
@@ -19,16 +21,37 @@ export class I2cRelayController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.i2cRelayService.findOne(+id);
+    return this.i2cRelayService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateI2cRelayDto: UpdateI2cRelayDto) {
-    return this.i2cRelayService.update(+id, updateI2cRelayDto);
+    return this.i2cRelayService.update(id, updateI2cRelayDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.i2cRelayService.remove(+id);
+    return this.i2cRelayService.remove(id);
+  }
+
+  @Get('read')
+  readall(): Promise<I2cRelayReading[]> {
+    return this.i2cRelayService.findAll();
+  }
+
+  @Get('read/:relay_id')
+  read(@Param('relay_id') relay_id: string): Promise<I2cRelayReading> {
+    return this.i2cRelayService.read(relay_id);
+  }
+
+  @Get('change/:relay_id/:position')
+  change(@Param('relay_id') relay_id: string, @Param('position') position: string): Promise<I2cRelayReading> {
+    return this.i2cRelayService.change(relay_id, position);
+  }
+  
+  // does all anyway
+  @Get('log')
+  log(): Promise<I2cRelayReading[]> {
+    return this.i2cRelayService.log();
   }
 }
