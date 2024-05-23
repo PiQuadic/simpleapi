@@ -25,6 +25,12 @@ export class I2cRelayService {
   private readonly logger = new Logger(I2cRelayService.name);
   private readonly bus = i2c.openSync(1);
   private readonly ADDRESS = 0x27; // for this relay...
+  private readonly defaultOff = {
+    A: 'off',
+    B: 'off',
+    C: 'off',
+    D: 'off',
+  };
 
   sendByteToPCF8574(byte) {
     try {
@@ -96,11 +102,21 @@ export class I2cRelayService {
   }
 
   async update(id: string, updateI2cRelayDto: UpdateI2cRelayDto) {
-    if (updateI2cRelayDto.lastvalue) {
-      this.logger.log('LAST VALUE FOUND');
-    }
+    this.logger.log(`Update ${id} with:`);
+    this.logger.log(updateI2cRelayDto);
+    const dbsw = await this.findAll();
+    const curSwitches = this.defaultOff; 
+    dbsw.map((sw) => {
+      curSwitches[sw.relay_id] = sw.lastvalue;
+    });
+    this.logger.log(curSwitches);
+
+    // update the changed relay
+    curSwitches[id] = updateI2cRelayDto?.lastvalue;
+    this.setSwitches(curSwitches);
+    
     return await this.I2cRelayDb.update(
-      { ...updateI2cRelayDto },
+      updateI2cRelayDto,
       {
         where: { relay_id: id} 
       }
