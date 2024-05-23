@@ -3,7 +3,7 @@ import { DhtSensorService } from './dht-sensor.service';
 import { DhtReading } from './interfaces/dht-sensor.interface';
 import { CreateDhtSensorLogDto } from './dto/create-dht-sensor.dto';
 
-@Controller('dht-sensor')
+@Controller('sensors')
 export class DhtSensorController {
 
   constructor( private dhtService: DhtSensorService ) {}
