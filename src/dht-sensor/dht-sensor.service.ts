@@ -3,6 +3,8 @@ import { CreateDhtSensorLogDto } from './dto/create-dht-sensor.dto';
 import { DhtReading } from './interfaces/dht-sensor.interface';
 import { DhtSensorLog } from './entities/dht-sensor.entity';
 import { InjectModel } from '@nestjs/sequelize';
+import { Op } from "sequelize";
+import { Cron } from '@nestjs/schedule';
 
 const sensor = require('node-dht-sensor').promises;
 sensor.setMaxRetries(10);
@@ -70,4 +72,20 @@ export class DhtSensorService {
     );
   }
 
+  getLogs(id, hours): Promise<DhtSensorLog[]> {
+    this.logger.log(`id: ${id} hours: ${hours}`)
+    return this.dhtSensorLogRepository.findAll({
+      where: {
+        sensor_id: {
+          [Op.eq]: 'tempsensor'
+        }
+      }
+    });
+  }
+
+  @Cron('*/5 * * * *')
+  handleCron() {
+    this.logger.log('Called when the current second is 45');
+    const junk = this.log();
+  }
 }
