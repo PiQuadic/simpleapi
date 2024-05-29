@@ -85,11 +85,12 @@ export class DhtSensorService {
 
     this.logger.log( `From: ${strFrom} To: ${strTo}`);
 
+    const validId = ['tempsensor', 'humiditysensor'];
     
     return this.dhtSensorLogRepository.findAll({
       where: {
         sensor_id: {
-          [Op.eq]: 'tempsensor'
+          [Op.eq]: validId.includes(id) ? id : validId[0]
         },
         updatedAt: {
           [Op.lt]: from,
@@ -101,7 +102,7 @@ export class DhtSensorService {
 
   @Cron('*/5 * * * *')
   handleCron() {
-    this.logger.log('Called when the current second is 45');
+    this.logger.log('Heartbeat Cron Initiated');
     const junk = this.log();
   }
 }
