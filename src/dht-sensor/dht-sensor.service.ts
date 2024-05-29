@@ -74,10 +74,26 @@ export class DhtSensorService {
 
   getLogs(id, hours): Promise<DhtSensorLog[]> {
     this.logger.log(`id: ${id} hours: ${hours}`)
+
+    const hrs = parseInt(hours);
+
+    const from = new Date();
+    const strFrom = `${from.getDate()}/${(from.getMonth()+1)}-${from.getHours()}:${from.getMinutes()}`
+
+    const to = new Date(new Date().valueOf() - hrs * 60 * 60 * 1000);
+    const strTo = `${to.getDate()}/${(to.getMonth()+1)}-${to.getHours()}:${to.getMinutes()}`
+
+    this.logger.log( `From: ${strFrom} To: ${strTo}`);
+
+    
     return this.dhtSensorLogRepository.findAll({
       where: {
         sensor_id: {
           [Op.eq]: 'tempsensor'
+        },
+        updatedAt: {
+          [Op.lt]: from,
+          [Op.gt]: to 
         }
       }
     });
