@@ -29,6 +29,7 @@
     "@nestjs/sequelize": "^10.0.1",
     "i2c-bus": "^5.2.3",
     "node-dht-sensor": "^0.4.3",
+    "node-libcamera": "^1.0.6",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "sequelize": "^6.37.3",
