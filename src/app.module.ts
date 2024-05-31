@@ -13,13 +13,15 @@ import { ScheduleModule } from '@nestjs/schedule';
 
 // database
 import { dataBaseConfig } from './database/database.config';
+import { ImagesModule } from './images/images.module';
 
 @Module({
   imports: [
     DhtSensorModule,
     I2cRelayModule,
     SequelizeModule.forRoot(dataBaseConfig),
-    ScheduleModule.forRoot()
+    ScheduleModule.forRoot(),
+    ImagesModule
   ],
   controllers: [AppController],
   providers: [AppService],
