@@ -33,7 +33,8 @@
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "sequelize": "^6.37.3",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "systeminformation": "^4.34.23"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
