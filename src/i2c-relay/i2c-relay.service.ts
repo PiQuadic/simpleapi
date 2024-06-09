@@ -89,7 +89,7 @@ export class I2cRelayService {
     return 'This action adds a new i2cRelay';
   }
 
-  findAll() {
+  async findAll() {
     return this.I2cRelayDb.findAll();
   }
 

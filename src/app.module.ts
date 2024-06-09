@@ -21,7 +21,7 @@ import { ImagesModule } from './images/images.module';
     I2cRelayModule,
     SequelizeModule.forRoot(dataBaseConfig),
     ScheduleModule.forRoot(),
-    ImagesModule
+    ImagesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
