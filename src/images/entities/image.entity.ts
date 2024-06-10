@@ -28,10 +28,13 @@ export class Image extends Model {
   height: number;
 
   @Column
-  quality: string;
+  quality: number;
 
   @Column
-  thumnail: string;
+  imagetype: string;
+
+  @Column
+  thumbnail: string;
 
   @CreatedAt
   @Column({

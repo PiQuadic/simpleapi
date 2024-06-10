@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateImageDto } from './dto/create-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
@@ -14,8 +14,48 @@ export class ImagesService {
     private imageRepository: typeof Image,
   ) {}
 
-  create(createImageDto: CreateImageDto) {
-    return 'This action adds a new image';
+  private readonly logger = new Logger(ImagesService.name);
+  private readonly cameraTimeout = 1000;
+  private readonly imageDefaults: Partial<Image> = {
+    height: 480,
+    width: 640,
+    quality: 100,
+    imagetype: 'jpg',
+    path: 'awaitingid',
+    thumbnail: JSON.stringify({
+      width: 142,
+      height: 100,
+      quality: 93 
+    }),
+  };
+
+  async create(camera_id: string): Promise<Image> {
+    const cam_id = (camera_id) ? camera_id : 'main';
+
+    // pre create to get id
+    const image = await this.imageRepository.create({...this.imageDefaults, camera_id: cam_id});
+    // then create the name and path
+    const filename = `${image.id}.${this.imageDefaults.imagetype}`;
+    const path = `images/${cam_id}/`;
+    const uri = path + filename;
+    this.logger.log(uri);
+    image.set({
+      path: path,
+      filename: filename,
+      uri: uri,
+    });
+    await image.save();
+
+    libcamera.still({
+      output: path, // output file path
+      quality: this.imageDefaults.quality,
+      timeout: this.cameraTimeout, // timeout before taking the picture
+      width: this.imageDefaults.width, // image width
+      height: this.imageDefaults.height, // image height
+      thumb: JSON.parse(this.imageDefaults.thumbnail), // convert it back for camera lib
+    })
+
+    return image;
   }
 
   findAll() {
@@ -35,55 +75,7 @@ export class ImagesService {
   }
   
   async log(camera_id: string) {
-    const type = 'jpg';
-    const cam_id = (camera_id) ? camera_id : 'main';
-
-    const thumb_w = 142;
-    const thumb_h = 100;
-    const thumb_q = 93;
-    const thumb_obj = {
-      width: thumb_w,
-      height: thumb_h,
-      quality: thumb_q 
-    }
-    
-    const newImage = {
-      height: 480,
-      width: 640,
-      quality: 100,
-      thumb: JSON.stringify(thumb_obj),
-      path: '',
-    };
-
-    // pre create to get id
-    const image = await this.imageRepository.create(newImage);
-    // then create the name and path
-    const filename = `${image.id}.${type}`;
-    const path = `images/${cam_id}/`;
-    const uri = path + filename;
-
-    libcamera.still({
-      output: path, // output file path
-      quality: newImage.quality,
-      timeout: 1000, // timeout before taking the picture
-      width: newImage.width, // image width
-      height: newImage.height, // image height
-      thumb: newImage.thumb
-    })
-
-    newImage.path = path;
-
-    return {
-      image_id: image?.id,
-      camera_id: camera_id,
-      path: newImage.path,
-      filename: filename,
-      uri: uri,
-      width: newImage.width,
-      height: newImage.height,
-      quality: newImage.quality,
-      thumbnail: newImage.thumb 
-    }
+    return await this.create(camera_id);
   }
 }
   /* Example
