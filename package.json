@@ -27,6 +27,8 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/schedule": "^4.0.2",
     "@nestjs/sequelize": "^10.0.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "i2c-bus": "^5.2.3",
     "node-dht-sensor": "^0.4.3",
     "node-libcamera": "^1.0.6",
