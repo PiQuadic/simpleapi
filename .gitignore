@@ -45,6 +45,11 @@ lerna-debug.log*
 .env.production.local
 .env.local
 
+#diagnostics
+diagnostics/images/*.jpg
+#image dir
+/images
+
 # temp directory
 .temp
 .tmp
