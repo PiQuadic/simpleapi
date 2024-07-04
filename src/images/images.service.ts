@@ -45,38 +45,50 @@ export class ImagesService {
       uri: uri,
     });
     await image.save();
+    this.logger.log(image);
 
     libcamera.still({
-      output: path, // output file path
+      output: uri, // output file path
       quality: this.imageDefaults.quality,
       timeout: this.cameraTimeout, // timeout before taking the picture
       width: this.imageDefaults.width, // image width
       height: this.imageDefaults.height, // image height
       thumb: JSON.parse(this.imageDefaults.thumbnail), // convert it back for camera lib
     })
+    .then((res) => this.logger.log(res))
+    .catch((err) => this.logger.log(err));
 
+
+    this.logger.log(image);
     return image;
   }
 
   findAll() {
+    this.logger.log('findAll');
     return `This action returns all images`;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
+    this.logger.log(`findOne ${id}`);
     return `This action returns a #${id} image`;
   }
 
   update(id: number, updateImageDto: UpdateImageDto) {
+    this.logger.log(`Update ${id}`);
+    this.logger.log( updateImageDto );
     return `This action updates a #${id} image`;
   }
 
   remove(id: number) {
+    this.logger.log(`REMOVE ${id}`);
     return `This action removes a #${id} image`;
   }
   
   async log(camera_id: string) {
+    this.logger.log(`log  ${camera_id}`);
     return await this.create(camera_id);
   }
+
 }
   /* Example
    *

@@ -13,21 +13,26 @@ export class ImagesController {
 
   @Get()
   async findAll() {
+    this.logger.log(`Get All`);
     return await this.imagesService.findAll();
+  }
+
+  @Get('log/:id')
+  log(@Param('id') camera_id: string) : Promise<Image> {
+    this.logger.log(camera_id);
+    return this.imagesService.log(camera_id);
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return await this.imagesService.findOne(+id);
+    this.logger.log(`Get ${id}`);
+    return await this.imagesService.findOne(id);
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
+    this.logger.log('delete');
     return await this.imagesService.remove(+id);
   }
 
-  @Get('log')
-  async log(@Param('id') camera_id: string) : Promise<Image> {
-    return await this.imagesService.log(camera_id);
-  }
 }
