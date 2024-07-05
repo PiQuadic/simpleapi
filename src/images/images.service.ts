@@ -3,8 +3,11 @@ import { InjectModel } from '@nestjs/sequelize';
 import { CreateImageDto } from './dto/create-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
 import { Image } from './entities/image.entity';
+import { Cron } from '@nestjs/schedule';
 
 const libcamera = require('node-libcamera');
+
+const DEFAULT_CAMERA = "camera1";
 
 @Injectable()
 export class ImagesService {
@@ -30,7 +33,7 @@ export class ImagesService {
   };
 
   async create(camera_id: string): Promise<Image> {
-    const cam_id = (camera_id) ? camera_id : 'main';
+    const cam_id = (camera_id) ? camera_id : 'camera1';
 
     // pre create to get id
     const image = await this.imageRepository.create({...this.imageDefaults, camera_id: cam_id});
@@ -87,6 +90,12 @@ export class ImagesService {
   async log(camera_id: string) {
     this.logger.log(`log  ${camera_id}`);
     return await this.create(camera_id);
+  }
+
+  @Cron('*/5 * * * *')
+  handleCron() {
+    this.logger.log('Image Log Cron Initiated');
+    const junk = this.log(DEFAULT_CAMERA);
   }
 
 }
