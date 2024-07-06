@@ -13,8 +13,12 @@ export class ImagesController {
 
   @Get()
   async findAll() {
-    this.logger.log(`Get All`);
-    return await this.imagesService.findAll();
+  }
+  
+  @Get('newest/:id')
+  async findNewest(@Param('id') id: string) {
+    this.logger.log(`Find Newest Image for Camera: ${id}`);
+    return await this.imagesService.findNewest(id);
   }
 
   @Get('log/:id')

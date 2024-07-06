@@ -76,6 +76,16 @@ export class ImagesService {
     return `This action returns a #${id} image`;
   }
 
+  async findNewest(id: string) {
+    this.logger.log(`Finding Newest Image for camera: ${id}`);
+    const newestImage = await this.imageRepository.findOne({
+      where: {camera_id: id},
+      order: [[ 'dt', 'DESC']]
+    });
+
+    return newestImage;
+  }
+
   update(id: number, updateImageDto: UpdateImageDto) {
     this.logger.log(`Update ${id}`);
     this.logger.log( updateImageDto );
