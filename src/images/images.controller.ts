@@ -27,6 +27,12 @@ export class ImagesController {
     return this.imagesService.log(camera_id);
   }
 
+  @Get('logs/:id/:hours')
+  async imagesLogs(@Param('id') id: string, @Param('hours') hours: string): Promise<Image[]> {
+    this.logger.log(`imageLogs: ${id} hours: ${hours}`);
+    return this.imagesService.getLogs(id, hours);
+  } 
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     this.logger.log(`Get ${id}`);

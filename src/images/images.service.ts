@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Op } from "sequelize";
 import { CreateImageDto } from './dto/create-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
 import { Image } from './entities/image.entity';
@@ -86,6 +87,35 @@ export class ImagesService {
     return newestImage;
   }
 
+  async getLogs(id: string, hours: string) {
+    this.logger.log(`id: ${id} hours: ${hours}`);
+    const hrs = parseInt(hours);
+
+    this.logger.log(`Finding Newest Image for camera: ${id}`);
+
+    const from = new Date();
+    const strFrom = `${from.getDate()}/${(from.getMonth()+1)}-${from.getHours()}:${from.getMinutes()}`
+
+    const to = new Date(new Date().valueOf() - hrs * 60 * 60 * 1000);
+    const strTo = `${to.getDate()}/${(to.getMonth()+1)}-${to.getHours()}:${to.getMinutes()}`
+
+    this.logger.log( `From: ${strFrom} To: ${strTo}`);
+
+    const validId = ['camera1'];
+    
+    return await this.imageRepository.findAll({
+      where: {
+        camera_id: {
+          [Op.eq]: validId.includes(id) ? id : validId[0]
+        },
+        dt: {
+          [Op.lt]: from,
+          [Op.gt]: to 
+        }
+      }
+    });
+  }
+
   update(id: number, updateImageDto: UpdateImageDto) {
     this.logger.log(`Update ${id}`);
     this.logger.log( updateImageDto );
@@ -107,24 +137,4 @@ export class ImagesService {
     this.logger.log('Image Log Cron Initiated');
     const junk = this.log(DEFAULT_CAMERA);
   }
-
 }
-  /* Example
-   *
-const libcamera = require('node-libcamera')
-
-// basic example
-libcamera.still({ output: 'test.jpg' })
-  .then((result) => {console.log(result)})
-  .catch((error) => {console.log(error)})
-
-// example with options
-libcamera.still({
-  output: 'images/test.jpg', // output file path
-  timeout: 2000, // timeout before taking the picture
-  width: 640, // image width
-  height: 480, // image height
-})
-  .then((result) => {console.log(result)})
-  .catch((error) => {console.log(error)})
-*/
