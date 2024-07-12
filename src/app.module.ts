@@ -15,6 +15,7 @@ import { dataBaseConfig } from './database/database.config';
 import { DhtSensorModule } from './dht-sensor/dht-sensor.module';
 import { I2cRelayModule } from './i2c-relay/i2c-relay.module';
 import { ImagesModule } from './images/images.module';
+import { SystemModule } from './system/system.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ImagesModule } from './images/images.module';
     DhtSensorModule,
     I2cRelayModule,
     ImagesModule,
+    SystemModule,
   ],
   controllers: [AppController],
   providers: [AppService],
