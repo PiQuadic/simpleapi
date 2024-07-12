@@ -22,6 +22,7 @@ export class DhtSensorController {
 
   @Get('log')
   log(): Promise<DhtReading> {
+    this.logger.log('Logging DHT Sensor');
     return this.dhtService.log();
   }
 

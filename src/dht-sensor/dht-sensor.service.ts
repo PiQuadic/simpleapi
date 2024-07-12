@@ -77,16 +77,18 @@ export class DhtSensorService {
 
     const hrs = parseInt(hours);
 
-    const from = new Date();
-    const strFrom = `${from.getDate()}/${(from.getMonth()+1)}-${from.getHours()}:${from.getMinutes()}`
+    const strFmt = (dt) => {
+      return `${dt.getDate()}/${(dt.getMonth()+1)}-${dt.getHours()}:${dt.getMinutes()}`
+    }
 
+    const from = new Date(); 
     const to = new Date(new Date().valueOf() - hrs * 60 * 60 * 1000);
-    const strTo = `${to.getDate()}/${(to.getMonth()+1)}-${to.getHours()}:${to.getMinutes()}`
 
-    this.logger.log( `From: ${strFrom} To: ${strTo}`);
+    this.logger.log( `From: ${strFmt(from)} To: ${strFmt(to)}`);
 
     const validId = ['tempsensor', 'humiditysensor'];
     
+    // horrible shortcut to security and leaves only two options
     return this.dhtSensorLogRepository.findAll({
       where: {
         sensor_id: {

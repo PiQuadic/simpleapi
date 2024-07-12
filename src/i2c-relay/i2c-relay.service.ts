@@ -39,6 +39,7 @@ export class I2cRelayService {
       this.bus.closeSync();
       return true;
     } catch (err) {
+      this.logger.log(err);
       this.bus.closeSync();
       return false;
     }
@@ -54,9 +55,9 @@ export class I2cRelayService {
     binAssembly += (switches.D == 'on') ? '0' : '1'
     binAssembly += '0000'; // filler
 
-    this.logger.log(binAssembly);
+    this.logger.log(`Bin Assembly: ${binAssembly}`);
     const switchCode = parseInt(binAssembly, 2);
-    this.logger.log(switchCode);
+    this.logger.log(`switchCode: ${switchCode}`);
     return this.sendByteToPCF8574(switchCode);
   };
 
@@ -105,22 +106,26 @@ export class I2cRelayService {
     this.logger.log(`Update ${id} with:`);
     this.logger.log(updateI2cRelayDto);
     const dbsw = await this.findAll();
+    // init switch setup
     const curSwitches = this.defaultOff; 
     dbsw.map((sw) => {
       curSwitches[sw.relay_id] = sw.lastvalue;
     });
-    this.logger.log(curSwitches);
+    this.logger.log(`current Switches ${curSwitches}`);
 
     // update the changed relay
     curSwitches[id] = updateI2cRelayDto?.lastvalue;
-    this.setSwitches(curSwitches);
-    
-    return await this.I2cRelayDb.update(
-      updateI2cRelayDto,
-      {
-        where: { relay_id: id} 
-      }
-    );
+    if (this.setSwitches(curSwitches)) {
+      return await this.I2cRelayDb.update(
+        updateI2cRelayDto,
+        {
+          where: { relay_id: id } 
+        }
+      );
+    }
+
+    this.logger.log("ERROR in setting switches");
+    return false;
   }
 
   remove(id: string) {
