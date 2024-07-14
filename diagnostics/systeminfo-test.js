@@ -6,5 +6,5 @@ si.cpuTemperature()
   .catch(error => console.error(error));
 
 si.fsSize()
-  .then(data => console.log(data))
+  .then(data => console.log(data[0].use))
   .catch(error => console.error(error));
