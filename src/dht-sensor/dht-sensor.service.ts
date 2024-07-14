@@ -104,7 +104,7 @@ export class DhtSensorService {
 
   @Cron('*/5 * * * *')
   handleCron() {
-    this.logger.log('Heartbeat Cron Initiated');
+    this.logger.log('Cron Initiated');
     const junk = this.log();
   }
 }

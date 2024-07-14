@@ -134,7 +134,7 @@ export class ImagesService {
 
   @Cron('*/5 * * * *')
   handleCron() {
-    this.logger.log('Image Log Cron Initiated');
+    this.logger.log('Cron Initiated');
     const junk = this.log(DEFAULT_CAMERA);
   }
 }

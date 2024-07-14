@@ -4,6 +4,7 @@ import { CreateSystemDto } from './dto/create-system.dto';
 import { UpdateSystemDto } from './dto/update-system.dto';
 import { System } from './entities/system.entity';
 import { Op } from "sequelize";
+import { Cron } from '@nestjs/schedule';
 
 const si = require('systeminformation');
 
@@ -88,4 +89,11 @@ export class SystemService {
       .catch(error => this.logger.error(error));
     return JSON.stringify([cpuTemp, fsSize]);
   }
+
+  @Cron('*/5 * * * *')
+  handleCron() {
+    this.logger.log('Cron Initiated');
+    this.log();
+  }
+  
 }
