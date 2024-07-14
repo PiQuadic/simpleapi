@@ -17,6 +17,11 @@ export class SystemController {
     return this.systemService.findAll();
   }
 
+  @Get('/log')
+  log() {
+    return this.systemService.log();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.systemService.findOne(+id);
