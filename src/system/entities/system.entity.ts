@@ -2,7 +2,7 @@ import { CreatedAt, Column, Model, Table } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 
 @Table({
-  tableName: 'system',
+  tableName: 'system-log',
 })
 
 export class System extends Model {

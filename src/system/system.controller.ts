@@ -2,10 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { SystemService } from './system.service';
 import { CreateSystemDto } from './dto/create-system.dto';
 import { UpdateSystemDto } from './dto/update-system.dto';
+import { System } from './entities/system.entity';
 
 @Controller('system')
 export class SystemController {
-  constructor(private readonly systemService: SystemService) {}
+  constructor(private systemService: SystemService) {}
 
   @Post()
   create(@Body() createSystemDto: CreateSystemDto) {
@@ -25,6 +26,11 @@ export class SystemController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.systemService.findOne(+id);
+  }
+
+  @Get('/:id/:hours')
+  async getLogs(@Param('id') id: string, @Param('hours') hours: string): Promise<System[]> {
+    return this.systemService.getLogs(id, hours);
   }
 
   @Patch(':id')
