@@ -5,7 +5,7 @@ export class CreateI2cRelayDto {
 
   name: string;
 
-  lastvalue: string;
+  value: string;
 
   lastlog: Date;
 
@@ -21,7 +21,7 @@ export class CreateI2cRelayDto {
 insert into relay (
   relay_id,
   name,
-  lastvalue,
+  value,
   lastlog,
   enabled,
   createdAt,

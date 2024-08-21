@@ -1,10 +1,7 @@
 import { CreatedAt, Column, Model, Table, UpdatedAt } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 
-@Table({
-  tableName: 'relay',
-})
-
+@Table({ tableName: 'relay' })
 export class I2cRelay extends Model {
 
   @Column
@@ -14,12 +11,7 @@ export class I2cRelay extends Model {
   name: string;
 
   @Column
-  lastvalue: string;
-
-  @Column({
-    type: DataTypes.DATE,
-  })
-  lastlog: Date;
+  value: string;
 
   @Column
   enabled: number;
@@ -39,23 +31,18 @@ export class I2cRelay extends Model {
   updatedAt: Date;
 }
 
-/*
- *
-insert into relay (
-  relay_id,
-  name,
-  lastvalue,
-  lastlog,
-  enabled,
-  createdAt,
-  updatedAt
-) values (
-  'A', // A-D
-  'Switch 1', 1-4
-  'off',
-  CURRENT_TIMESTAMP,
-  1,
-  CURRENT_TIMESTAMP,
-  CURRENT_TIMESTAMP
-);
-*/
+@Table({ tableName: 'relay_log' })
+export class I2cRelayLog extends Model {
+  @Column
+  relay_id: string;
+
+  @Column
+  value: string;
+
+  @CreatedAt
+  @Column({
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW
+  })
+  createdAt: Date;
+}

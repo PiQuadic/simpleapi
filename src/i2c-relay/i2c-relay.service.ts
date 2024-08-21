@@ -20,7 +20,7 @@ export class I2cRelayService {
   constructor(
     @InjectModel(I2cRelay)
     private I2cRelayDb: typeof I2cRelay,
-  ) {}
+  ) { }
 
   private readonly logger = new Logger(I2cRelayService.name);
   private readonly bus = i2c.openSync(1);
@@ -46,7 +46,7 @@ export class I2cRelayService {
     // Close the I2C bus after finishing
   }
 
-  setSwitches(switches:i2cFourSwitch):boolean {
+  setSwitches(switches: i2cFourSwitch): boolean {
     // for some reason this is reversed 
     let binAssembly = '';
     binAssembly = (switches.A == 'on') ? '0' : '1'
@@ -96,8 +96,8 @@ export class I2cRelayService {
 
   async findOne(id: string): Promise<I2cRelay> {
     return await this.I2cRelayDb.findOne({
-      where : {
-        relay_id : id
+      where: {
+        relay_id: id
       }
     });
   }
@@ -107,19 +107,19 @@ export class I2cRelayService {
     this.logger.log(updateI2cRelayDto);
     const dbsw = await this.findAll();
     // init switch setup
-    const curSwitches = this.defaultOff; 
+    const curSwitches = this.defaultOff;
     dbsw.map((sw) => {
-      curSwitches[sw.relay_id] = sw.lastvalue;
+      curSwitches[sw.relay_id] = sw.value;
     });
     this.logger.log(`current Switches ${curSwitches}`);
 
     // update the changed relay
-    curSwitches[id] = updateI2cRelayDto?.lastvalue;
+    curSwitches[id] = updateI2cRelayDto?.value;
     if (this.setSwitches(curSwitches)) {
       return await this.I2cRelayDb.update(
         updateI2cRelayDto,
         {
-          where: { relay_id: id } 
+          where: { relay_id: id }
         }
       );
     }
