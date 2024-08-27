@@ -13,7 +13,7 @@ export class SystemService {
   constructor(
     @InjectModel(System)
     private systemRepository: typeof System,
-  ) {}
+  ) { }
 
   private readonly logger = new Logger(SystemService.name);
   private readonly validId = ['cpuTemperature', 'fileUsage'];
@@ -28,13 +28,13 @@ export class SystemService {
     const hrs = parseInt(hours);
 
     const strFmt = (dt) => {
-      return `${dt.getDate()}/${(dt.getMonth()+1)}-${dt.getHours()}:${dt.getMinutes()}`
+      return `${dt.getDate()}/${(dt.getMonth() + 1)}-${dt.getHours()}:${dt.getMinutes()}`
     }
 
-    const from = new Date(); 
+    const from = new Date();
     const to = new Date(new Date().valueOf() - hrs * 60 * 60 * 1000);
 
-    this.logger.log( `From: ${strFmt(from)} To: ${strFmt(to)}`);
+    this.logger.log(`From: ${strFmt(from)} To: ${strFmt(to)}`);
 
 
     return this.systemRepository.findAll({
@@ -44,7 +44,7 @@ export class SystemService {
         },
         updatedAt: {
           [Op.lt]: from,
-          [Op.gt]: to 
+          [Op.gt]: to
         }
       }
     });
@@ -68,6 +68,7 @@ export class SystemService {
   async log() {
     const cpuTemp = await si.cpuTemperature()
       .then(data => {
+        this.logger.log('CPU Temp:');
         this.logger.log(data);
         return this.systemRepository.create({
           system_id: 'cpuTemperature',
@@ -95,5 +96,5 @@ export class SystemService {
     this.logger.log('Cron Initiated');
     this.log();
   }
-  
+
 }

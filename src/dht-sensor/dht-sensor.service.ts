@@ -15,8 +15,9 @@ export class DhtSensorService {
   constructor(
     @InjectModel(DhtSensorLog)
     private dhtSensorLogRepository: typeof DhtSensorLog,
-  ) {}
+  ) { }
 
+  private readonly validId = ['tempsensor', 'humiditysensor'];
   private readonly pin = 4;
   private readonly dhttype = 22;
   private readonly logger = new Logger(DhtSensorService.name);
@@ -27,9 +28,9 @@ export class DhtSensorService {
     return 'This action adds a new i2cRelay';
   }
 
-  read(): Promise<DhtReading> {
+  async read(): DhtReading {
     sensor.initialize(this.dhttype, this.pin);
-    return sensor.read(this.dhttype, this.pin).then(
+    return await sensor.read(this.dhttype, this.pin).then(
       (res) => {
         this.logger.log(`temp: ${res.temperature} deg C, humidity: ${res.humidity}%`);
         return {
@@ -43,12 +44,12 @@ export class DhtSensorService {
     );
   }
 
-  log(): Promise<DhtReading> {
+  async log(): DhtReading {
     sensor.initialize(this.dhttype, this.pin);
-    return sensor.read(this.dhttype, this.pin).then(
+    return await sensor.read(this.dhttype, this.pin).then(
       (res) => {
         this.logger.log(`temp: ${res.temperature} deg C, humidity: ${res.humidity}%`);
-        
+
         this.dhtSensorLogRepository.create({
           sensor_id: 'tempsensor',
           name: 'ambient temp',
@@ -72,31 +73,40 @@ export class DhtSensorService {
     );
   }
 
-  getLogs(id, hours): Promise<DhtSensorLog[]> {
+  async getLogs(id, hours): DhtSensorLog[] {
     this.logger.log(`id: ${id} hours: ${hours}`)
 
-    const hrs = parseInt(hours);
-
     const strFmt = (dt) => {
-      return `${dt.getDate()}/${(dt.getMonth()+1)}-${dt.getHours()}:${dt.getMinutes()}`
+      return `${dt.getDate()}/${(dt.getMonth() + 1)}-${dt.getHours()}:${dt.getMinutes()}`
     }
 
-    const from = new Date(); 
+    const hrs = parseInt(hours);
+    if (hrs === 0) {
+      const res = await this.dhtSensorLogRepository.findOne({
+        where: {
+          sensor_id: {
+            [Op.eq]: this.validId.includes(id) ? id : this.validId[0]
+          }
+        }
+      });
+      return [res];
+    }
+
+    const from = new Date();
     const to = new Date(new Date().valueOf() - hrs * 60 * 60 * 1000);
 
-    this.logger.log( `From: ${strFmt(from)} To: ${strFmt(to)}`);
+    this.logger.log(`From: ${strFmt(from)} To: ${strFmt(to)}`);
 
-    const validId = ['tempsensor', 'humiditysensor'];
-    
+
     // horrible shortcut to security and leaves only two options
-    return this.dhtSensorLogRepository.findAll({
+    return await this.dhtSensorLogRepository.findAll({
       where: {
         sensor_id: {
-          [Op.eq]: validId.includes(id) ? id : validId[0]
+          [Op.eq]: this.validId.includes(id) ? id : this.validId[0]
         },
         updatedAt: {
           [Op.lt]: from,
-          [Op.gt]: to 
+          [Op.gt]: to
         }
       }
     });

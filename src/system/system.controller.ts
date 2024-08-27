@@ -6,7 +6,7 @@ import { System } from './entities/system.entity';
 
 @Controller('system')
 export class SystemController {
-  constructor(private systemService: SystemService) {}
+  constructor(private systemService: SystemService) { }
 
   @Post()
   create(@Body() createSystemDto: CreateSystemDto) {
