@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  
+
   private readonly logger = new Logger(AppService.name);
 
   getHello(): string {
@@ -11,6 +11,6 @@ export class AppService {
 
   heartbeat(): string {
     this.logger.log('Heartbeat Started');
-    return 'Logger'; 
+    return 'PiQadic System healthy';
   }
 }
