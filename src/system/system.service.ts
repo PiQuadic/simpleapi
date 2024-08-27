@@ -30,7 +30,7 @@ export class SystemService {
       return this.systemRepository.findOne({
         subQuery: false,
         where: {
-          sensor_id: {
+          system_id: {
             [Op.eq]: this.validId.includes(id) ? id : this.validId[0]
           }
         }
