@@ -28,9 +28,9 @@ export class DhtSensorService {
     return 'This action adds a new i2cRelay';
   }
 
-  async read(): DhtReading {
+  read(): Promise<DhtReading> {
     sensor.initialize(this.dhttype, this.pin);
-    return await sensor.read(this.dhttype, this.pin).then(
+    return sensor.read(this.dhttype, this.pin).then(
       (res) => {
         this.logger.log(`temp: ${res.temperature} deg C, humidity: ${res.humidity}%`);
         return {
@@ -44,9 +44,9 @@ export class DhtSensorService {
     );
   }
 
-  async log(): DhtReading {
+  log(): Promise<DhtReading> {
     sensor.initialize(this.dhttype, this.pin);
-    return await sensor.read(this.dhttype, this.pin).then(
+    return sensor.read(this.dhttype, this.pin).then(
       (res) => {
         this.logger.log(`temp: ${res.temperature} deg C, humidity: ${res.humidity}%`);
 
@@ -73,7 +73,7 @@ export class DhtSensorService {
     );
   }
 
-  async getLogs(id, hours): DhtSensorLog[] {
+  getLogs(id, hours): Promise<DhtSensorLog[]> {
     this.logger.log(`id: ${id} hours: ${hours}`)
 
     const strFmt = (dt) => {
@@ -82,7 +82,7 @@ export class DhtSensorService {
 
     const hrs = parseInt(hours);
     if (hrs === 0) {
-      const res = await this.dhtSensorLogRepository.findOne({
+      const res = this.dhtSensorLogRepository.findOne({
         where: {
           sensor_id: {
             [Op.eq]: this.validId.includes(id) ? id : this.validId[0]
@@ -99,7 +99,7 @@ export class DhtSensorService {
 
 
     // horrible shortcut to security and leaves only two options
-    return await this.dhtSensorLogRepository.findAll({
+    return this.dhtSensorLogRepository.findAll({
       where: {
         sensor_id: {
           [Op.eq]: this.validId.includes(id) ? id : this.validId[0]

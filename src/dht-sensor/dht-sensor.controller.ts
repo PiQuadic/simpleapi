@@ -15,20 +15,20 @@ export class DhtSensorController {
   }
 
   @Get()
-  read(): DhtReading {
+  async read(): Promise<DhtReading> {
     this.logger.log('Reading DHT Sensor');
-    return this.dhtService.read();
+    return await this.dhtService.read();
   }
 
   @Get('log')
-  log(): DhtReading {
+  async log(): Promise<DhtReading> {
     this.logger.log('Logging DHT Sensor');
-    return this.dhtService.log();
+    return await this.dhtService.log();
   }
 
   @Get('/:id/:hours')
   async temps(@Param('id') id: string, @Param('hours') hours: string): Promise<DhtSensorLog[]> {
-    return this.dhtService.getLogs(id, hours);
+    return await this.dhtService.getLogs(id, hours);
   }
 
 }
