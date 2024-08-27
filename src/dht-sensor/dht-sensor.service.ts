@@ -82,7 +82,7 @@ export class DhtSensorService {
 
     const hrs = parseInt(hours);
     if (hrs === 0) {
-      this.dhtSensorLogRepository.findOne({
+      return this.dhtSensorLogRepository.findOne({
         subQuery: false,
         where: {
           sensor_id: {
