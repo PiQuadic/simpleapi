@@ -73,7 +73,7 @@ export class DhtSensorService {
     );
   }
 
-  getLogs(id, hours): Promise<DhtSensorLog[]> {
+  getLogs(id, hours): Promise<DhtSensorLog[] | DhtSensorLog> {
     this.logger.log(`id: ${id} hours: ${hours}`)
 
     const strFmt = (dt) => {
@@ -82,14 +82,14 @@ export class DhtSensorService {
 
     const hrs = parseInt(hours);
     if (hrs === 0) {
-      const res = this.dhtSensorLogRepository.findOne({
+      this.dhtSensorLogRepository.findOne({
+        subQuery: false,
         where: {
           sensor_id: {
             [Op.eq]: this.validId.includes(id) ? id : this.validId[0]
           }
         }
       });
-      return [res];
     }
 
     const from = new Date();

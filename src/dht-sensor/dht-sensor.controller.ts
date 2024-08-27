@@ -27,7 +27,7 @@ export class DhtSensorController {
   }
 
   @Get('/:id/:hours')
-  async temps(@Param('id') id: string, @Param('hours') hours: string): Promise<DhtSensorLog[]> {
+  async temps(@Param('id') id: string, @Param('hours') hours: string): Promise<DhtSensorLog[] | DhtSensorLog> {
     return await this.dhtService.getLogs(id, hours);
   }
 
