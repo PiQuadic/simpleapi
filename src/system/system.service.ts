@@ -22,10 +22,20 @@ export class SystemService {
     return 'This action adds a new system';
   }
 
-  getLogs(id, hours): Promise<System[]> {
+  getLogs(id, hours): Promise<System[] | System> {
     this.logger.log(`id: ${id} hours: ${hours}`)
 
     const hrs = parseInt(hours);
+    if (hrs === 0) {
+      return this.systemRepository.findOne({
+        subQuery: false,
+        where: {
+          sensor_id: {
+            [Op.eq]: this.validId.includes(id) ? id : this.validId[0]
+          }
+        }
+      });
+    }
 
     const strFmt = (dt) => {
       return `${dt.getDate()}/${(dt.getMonth() + 1)}-${dt.getHours()}:${dt.getMinutes()}`
@@ -53,16 +63,8 @@ export class SystemService {
     return this.systemRepository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} system`;
-  }
-
-  update(id: number, updateSystemDto: UpdateSystemDto) {
-    return `This action updates a #${id} system`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} system`;
+  findOne(id: number): Promise<System> {
+    return this.systemRepository.findByPk(id);
   }
 
   async log() {
