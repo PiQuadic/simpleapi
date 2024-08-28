@@ -115,6 +115,7 @@ export class I2cRelayService {
 
     // update the changed relay
     curSwitches[id] = updateI2cRelayDto?.value;
+    this.logger.log(`id: ${id} to ${updateI2cRelayDto?.value}`);
     if (this.setSwitches(curSwitches)) {
       return await this.I2cRelayDb.update(
         updateI2cRelayDto,
@@ -123,7 +124,6 @@ export class I2cRelayService {
         }
       );
     }
-
     this.logger.log("ERROR in setting switches");
     return false;
   }
