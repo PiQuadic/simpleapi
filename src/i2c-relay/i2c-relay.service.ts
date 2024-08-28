@@ -105,13 +105,13 @@ export class I2cRelayService {
   async update(id: string, updateI2cRelayDto: UpdateI2cRelayDto) {
     this.logger.log(`Update ${id} with:`);
     this.logger.log(updateI2cRelayDto);
-    const dbsw = await this.findAll();
+    const databaseSwitches = await this.findAll();
     // init switch setup
     const curSwitches = this.defaultOff;
-    dbsw.map((sw) => {
+    databaseSwitches.map((sw) => {
       curSwitches[sw.relay_id] = sw.value;
     });
-    this.logger.log(`current Switches ${curSwitches}`);
+    this.logger.log(`current Switches ${JSON.stringify(curSwitches, null, 2)}`);
 
     // update the changed relay
     curSwitches[id] = updateI2cRelayDto?.value;
