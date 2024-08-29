@@ -17,9 +17,9 @@ function sendByteToPCF8574(byte) {
 
 let binAssembly = '';
 const switches = {
-  A: 'on',
+  A: 'off',
   B: 'off',
-  C: 'on',
+  C: 'off',
   D: 'off'
 };
 
