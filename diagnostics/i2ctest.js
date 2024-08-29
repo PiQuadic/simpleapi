@@ -12,7 +12,12 @@ const ADDRESS = 0x27;
 function sendByteToPCF8574(byte) {
   bus.writeByteSync(ADDRESS, 0x00, byte);
   console.log(`Byte ${byte.toString(2).padStart(8, '0')} sent to PCF8574`);
-  return bus.readByteSync(ADDRESS, 0x00);
+}
+
+function readByteFromPCF8574() {
+  const byte = bus.readByteSync(ADDRESS, 0x00);
+  console.log(`Byte ${byte.toString(2).padStart(8, '0')} received`);
+  return byte;
 }
 
 let binAssembly = '';
@@ -30,7 +35,7 @@ binAssembly += (switches.D == 'on') ? '0' : '1'
 binAssembly += '0000'; // filler
 
 // const binaryRep = '00110000'; /// all off
-console.log(binAssembly);
+console.log(`binAss ${binAssembly}`);
 const binaryRep = binAssembly;
 const hexa = parseInt(binaryRep, 2);
 // Example to turn on all outputs
@@ -38,8 +43,9 @@ const hexa = parseInt(binaryRep, 2);
 console.log("setting:", hexa);
 //sendByteToPCF8574(0xf0);
 const result = sendByteToPCF8574(hexa);
-
-console.log(`Finished ${result}`);
+console.log(`Sent ${result}`);
 console.log(result);
-// Close the I2C bus after finishing
 bus.closeSync();
+//const readRes = readByteFromPCF8574();
+// console.log(`Received ${readRes}`);
+// Close the I2C bus after finishing
