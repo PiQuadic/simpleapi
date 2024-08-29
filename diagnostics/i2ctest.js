@@ -12,6 +12,9 @@ const ADDRESS = 0x27;
 function sendByteToPCF8574(byte) {
   bus.writeByteSync(ADDRESS, 0x00, byte);
   console.log(`Byte ${byte.toString(2).padStart(8, '0')} sent to PCF8574`);
+  const read = bus.readByteSync(ADDRESS, 0x00, byte);
+  console.log(read);
+  console.log('done');
 }
 
 let binAssembly = '';
