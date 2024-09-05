@@ -1,4 +1,4 @@
-INSERT INTO relay VALUES(1,'A','Switch 1','OFF','OFF', '2024-04-20 04:20:00', '2024-04-20 04:20:00',1,'2024-05-21 04:35:27','2024-08-21 22:09:27.049 +00:00');
-INSERT INTO relay VALUES(2,'B','Switch 2','OFF','2024-04-20 04:20:00',1,'2024-05-21 04:35:49','2024-07-08 02:10:52.795 +00:00');
-INSERT INTO relay VALUES(3,'C','Switch 3','OFF','2024-04-20 04:20:00',1,'2024-05-21 04:38:29','2024-07-04 18:50:50.202 +00:00');
-INSERT INTO relay VALUES(4,'D','Switch 4','OFF','2024-04-20 04:20:00',1,'2024-05-21 04:38:46','2024-07-23 22:24:15.445 +00:00');
+INSERT INTO relay ( relay_id, name, position, enabled) VALUES ( 'A', 'Switch 1', 'OFF', 1);
+INSERT INTO relay ( relay_id, name, position, enabled) VALUES ( 'B', 'Switch 2', 'OFF', 1);
+INSERT INTO relay ( relay_id, name, position, enabled) VALUES ( 'C', 'Switch 5', 'OFF', 1);
+INSERT INTO relay ( relay_id, name, position, enabled) VALUES ( 'D', 'Switch 4', 'OFF', 1);

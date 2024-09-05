@@ -1,4 +1,20 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateI2cRelayDto } from './create-i2c-relay.dto';
+import { IsDate, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
-export class UpdateI2cRelayDto extends PartialType(CreateI2cRelayDto) {}
+// normally closed switch is ON in position 0
+export enum RelayPosition {
+  ON = 0,
+  OFF = 1
+}
+
+export enum RelayEnabled {
+  ON = 1,
+  OFF = 0
+}
+
+export class UpdateI2cRelayDto {
+
+  @IsNotEmpty()
+  @IsEnum(RelayPosition)
+  position: RelayPosition;
+
+}
