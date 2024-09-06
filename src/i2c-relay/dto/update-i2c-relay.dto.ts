@@ -2,8 +2,8 @@ import { IsDate, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
 // normally closed switch is ON in position 0
 export enum RelayPosition {
-  ON = 0,
-  OFF = 1
+  "ON" = 0,
+  "OFF" = 1
 }
 
 export enum RelayEnabled {

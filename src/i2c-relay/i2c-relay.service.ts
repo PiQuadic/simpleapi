@@ -47,9 +47,9 @@ export class I2cRelayService {
   setSwitches(switchesSettings): boolean {
     console.log(`Switches Settings: ${JSON.stringify(switchesSettings)}`);
     const switches = switchesSettings.map((sw) => RelayPosition[sw])
-    switches.push(this.padding);
-    console.log(`Switches Mapped: ${JSON.stringify(switches)}`);
-    const binAssembly = switches.join('');
+    const paddedSwitches = switches.concat(this.padding);
+    console.log(`Switches Mapped: ${JSON.stringify(paddedSwitches)}`);
+    const binAssembly = paddedSwitches.join('');
 
     this.logger.log(`Bin Assembly: ${binAssembly}`);
     const switchCode = parseInt(binAssembly, 2);
