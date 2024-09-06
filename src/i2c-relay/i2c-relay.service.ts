@@ -117,6 +117,7 @@ export class I2cRelayService {
     this.logger.log(updateSettings);
 
     if (this.setSwitches(updateSettings)) {
+      return true;
       return await this.I2cRelayDb.update(
         updateI2cRelayDto,
         {
