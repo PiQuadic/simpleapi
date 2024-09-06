@@ -1,6 +1,6 @@
 import { Logger, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { UpdateI2cRelayDto } from './dto/update-i2c-relay.dto';
+import { UpdateI2cRelayDto, RelayPosition } from './dto/update-i2c-relay.dto';
 import { I2cRelay } from './entities/i2c-relay.entity';
 
 const i2c = require('i2c-bus');
