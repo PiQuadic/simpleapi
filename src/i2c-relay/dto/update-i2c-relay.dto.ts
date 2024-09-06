@@ -14,7 +14,7 @@ export const RelayEnabled = {
 export class UpdateI2cRelayDto {
 
   @IsNotEmpty()
-  @IsIn([0, 1])
-  position: number;
+  @IsIn(['ON', 'OFF'])
+  position: string;
 
 }
