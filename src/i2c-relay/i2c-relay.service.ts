@@ -46,13 +46,10 @@ export class I2cRelayService {
 
   setSwitches(switches): boolean {
     const paddedSwitches = switches.concat(this.padding);
-    console.log(`Switches Mapped: ${JSON.stringify(paddedSwitches)}`);
     const binAssembly = paddedSwitches.join('');
 
     this.logger.log(`Bin Assembly: ${binAssembly}`);
     const switchCode = parseInt(binAssembly, 2);
-    this.logger.log(`switchCode: ${switchCode}`);
-    return true;
     return this.sendByteToPCF8574(switchCode);
   };
 
@@ -107,16 +104,10 @@ export class I2cRelayService {
     });
     // update the changed relay
     const updateSettings = newSwitchSettings.map((sw) => {
-      this.logger.log(`Updating ${id} to ${sw.position}`);
-      this.logger.log(RelayPosition["OFF"], RelayPosition["ON"]);
-      //return RelayPosition[sw.position] || RelayPosition.OFF;
       return sw.position;
     });
-    this.logger.log('update settings:');
-    this.logger.log(updateSettings);
 
     if (this.setSwitches(updateSettings)) {
-      return true;
       return await this.I2cRelayDb.update(
         updateI2cRelayDto,
         {
