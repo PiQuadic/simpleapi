@@ -104,6 +104,8 @@ export class I2cRelayService {
         { ...sw, ...updateI2cRelayDto } :
         sw
     });
+    this.logger.log('New Switch Settings:');
+    this.logger.log(JSON.stringify(newSwitchSettings, null, 2));
     // update the changed relay
     const updateSettings = newSwitchSettings.map((sw) => {
       this.logger.log(`Updating ${id} to ${sw.position}`);
