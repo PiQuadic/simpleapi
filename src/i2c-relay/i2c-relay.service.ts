@@ -44,7 +44,8 @@ export class I2cRelayService {
     // Close the I2C bus after finishing
   }
 
-  setSwitches(switches): boolean {
+  setSwitches(switchesSettings): boolean {
+    const switches = switchesSettings.map((sw) => RelayPosition[sw])
     switches.push(this.padding);
     const binAssembly = switches.join('');
 
@@ -107,7 +108,8 @@ export class I2cRelayService {
     const updateSettings = newSwitchSettings.map((sw) => {
       this.logger.log(`Updating ${id} to ${sw.position}`);
       this.logger.log(RelayPosition["OFF"], RelayPosition["ON"]);
-      return RelayPosition[sw.position] || RelayPosition.OFF;
+      //return RelayPosition[sw.position] || RelayPosition.OFF;
+      return sw.position;
     });
     this.logger.log('update settings:');
     this.logger.log(updateSettings);
