@@ -45,8 +45,10 @@ export class I2cRelayService {
   }
 
   setSwitches(switchesSettings): boolean {
+    console.log(`Switches Settings: ${JSON.stringify(switchesSettings)}`);
     const switches = switchesSettings.map((sw) => RelayPosition[sw])
     switches.push(this.padding);
+    console.log(`Switches Mapped: ${JSON.stringify(switches)}`);
     const binAssembly = switches.join('');
 
     this.logger.log(`Bin Assembly: ${binAssembly}`);
@@ -95,22 +97,16 @@ export class I2cRelayService {
   }
 
   async update(id: string, updateI2cRelayDto: UpdateI2cRelayDto) {
-    this.logger.log(`Update ${id} with:`);
-    this.logger.log(JSON.stringify(updateI2cRelayDto, null, 2));
     const databaseSwitches = await this.findAll();
 
     // init switch setup
     const newSwitchSettings = databaseSwitches.map((sw) => {
-      this.logger.log('switchbefore:', JSON.stringify(sw, null, 2));
       if (sw.relay_id === id && sw.enabled === 1) {
-        this.logger.log('switch found:', JSON.stringify(sw, null, 2));
         sw.position = RelayPosition[updateI2cRelayDto.position];
         return sw;
       }
       return sw;
     });
-    this.logger.log('New Switch Settings:');
-    this.logger.log(JSON.stringify(newSwitchSettings, null, 2));
     // update the changed relay
     const updateSettings = newSwitchSettings.map((sw) => {
       this.logger.log(`Updating ${id} to ${sw.position}`);
