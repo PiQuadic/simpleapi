@@ -89,6 +89,7 @@ export class I2cRelayService {
   }
 
   async update(id: string, updateI2cRelayDto: UpdateI2cRelayDto) {
+    this.logger.log(`Updating relay ID ${id} to ${updateI2cRelayDto.position}`);
     const databaseSwitches = await this.findAll();
 
     // init switch setup
