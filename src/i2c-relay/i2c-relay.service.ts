@@ -106,6 +106,7 @@ export class I2cRelayService {
         ? { ...sw, ...updateI2cRelayDto }
         : sw;
       this.logger.log('switchafter:', JSON.stringify(x, null, 2));
+      return x;
     });
     this.logger.log('New Switch Settings:');
     this.logger.log(JSON.stringify(newSwitchSettings, null, 2));
