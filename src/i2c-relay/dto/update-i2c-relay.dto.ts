@@ -1,20 +1,20 @@
-import { IsDate, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsIn, IsNotEmpty } from 'class-validator';
 
 // normally closed switch is ON in position 0
-export enum RelayPosition {
-  "ON" = 0,
-  "OFF" = 1
-}
+export const RelayPosition = {
+  ON: 0,
+  OFF: 1
+};
 
-export enum RelayEnabled {
-  ON = 1,
-  OFF = 0
-}
+export const RelayEnabled = {
+  ON: 1,
+  OFF: 0
+};
 
 export class UpdateI2cRelayDto {
 
   @IsNotEmpty()
-  @IsEnum(RelayPosition)
-  position: RelayPosition;
+  @IsIn([0, 1])
+  position: number;
 
 }

@@ -32,7 +32,7 @@ export class I2cRelayService {
 
   sendByteToPCF8574(byte) {
     try {
-      this.logger.log(`Byte ${byte.toString(2)} sent to PCF8574`);
+      this.logger.log(`Byte ${byte.toString(2).padStart(8, '0')} sent to PCF8574`);
       this.bus.writeByteSync(this.ADDRESS, 0x00, byte);
       this.bus.closeSync();
       return true;
@@ -59,7 +59,6 @@ export class I2cRelayService {
       '1',
       '1',
       '1',
-      ...this.padding
     ];
     // Sending 0xFF will set all IO pins to LOW
     // binaryRep '11110000' ALL off
@@ -72,12 +71,10 @@ export class I2cRelayService {
       '0',
       '0',
       '0',
-      ...this.padding
     ];
     // binaryRep '00000000' ALL off
     this.setSwitches(switches);
   };
-
 
   async findAll(): Promise<I2cRelay[]> {
     return this.I2cRelayDb.findAll({ order: [['relay_id', 'ASC']] });
