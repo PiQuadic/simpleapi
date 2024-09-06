@@ -106,7 +106,7 @@ export class I2cRelayService {
 
     if (this.setSwitches(updateSettings)) {
       return await this.I2cRelayDb.update(
-        updateI2cRelayDto,
+        { position: RelayPosition[updateI2cRelayDto.position] },
         {
           where: { relay_id: id }
         }
