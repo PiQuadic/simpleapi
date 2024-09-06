@@ -44,13 +44,7 @@ export class I2cRelayService {
     // Close the I2C bus after finishing
   }
 
-  setSwitches(switchesSettings): boolean {
-    console.log(`Switches Settings: ${JSON.stringify(switchesSettings)}`);
-    const switches = switchesSettings.map((sw) => {
-      this.logger.log(`sw Settings ${sw}`);
-      this.logger.log(`swenum Settings ${RelayPosition[sw]}`);
-      return RelayPosition[sw];
-    });
+  setSwitches(switches): boolean {
     const paddedSwitches = switches.concat(this.padding);
     console.log(`Switches Mapped: ${JSON.stringify(paddedSwitches)}`);
     const binAssembly = paddedSwitches.join('');
