@@ -105,10 +105,12 @@ export class I2cRelayService {
     });
     // update the changed relay
     const updateSettings = newSwitchSettings.map((sw) => {
-      this.logger.log(`Updating ${sw.relay_id} to ${sw.position}`);
-      this.logger.log(RelayPosition.OFF, RelayPosition.ON);
+      this.logger.log(`Updating ${id} to ${sw.position}`);
+      this.logger.log(RelayPosition["OFF"], RelayPosition["ON"]);
       return RelayPosition[sw.position] || RelayPosition.OFF;
     });
+    this.logger.log('update settings:');
+    this.logger.log(updateSettings);
 
     if (this.setSwitches(updateSettings)) {
       return await this.I2cRelayDb.update(
