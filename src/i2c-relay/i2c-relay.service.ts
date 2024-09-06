@@ -102,11 +102,12 @@ export class I2cRelayService {
     // init switch setup
     const newSwitchSettings = databaseSwitches.map((sw) => {
       this.logger.log('switchbefore:', JSON.stringify(sw, null, 2));
-      const x = (sw.relay_id === id && sw.enabled === 1)
-        ? { ...sw, ...updateI2cRelayDto }
-        : sw;
-      this.logger.log('switchafter:', JSON.stringify(x, null, 2));
-      return x;
+      if (sw.relay_id === id && sw.enabled === 1) {
+        this.logger.log('switch found:', JSON.stringify(sw, null, 2));
+        sw.position = RelayPosition[updateI2cRelayDto.position];
+        return sw;
+      }
+      return sw;
     });
     this.logger.log('New Switch Settings:');
     this.logger.log(JSON.stringify(newSwitchSettings, null, 2));
