@@ -98,14 +98,14 @@ export class I2cRelayService {
     this.logger.log(`Update ${id} with:`);
     this.logger.log(JSON.stringify(updateI2cRelayDto, null, 2));
     const databaseSwitches = await this.findAll();
-    this.logger.log(`Database results:`);
-    this.logger.log(JSON.stringify(databaseSwitches, null, 2));
 
     // init switch setup
     const newSwitchSettings = databaseSwitches.map((sw) => {
-      return (sw.relay_id === id && sw.enabled === 1) ?
-        { ...sw, ...updateI2cRelayDto } :
-        sw
+      this.logger.log('switchbefore:', JSON.stringify(sw, null, 2));
+      const x = (sw.relay_id === id && sw.enabled === 1)
+        ? { ...sw, ...updateI2cRelayDto }
+        : sw;
+      this.logger.log('switchafter:', JSON.stringify(x, null, 2));
     });
     this.logger.log('New Switch Settings:');
     this.logger.log(JSON.stringify(newSwitchSettings, null, 2));
