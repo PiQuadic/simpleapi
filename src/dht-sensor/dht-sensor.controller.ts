@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Logger, Param, Post } from '@nestjs/common';
 import { DhtSensorService } from './dht-sensor.service';
-import { DhtReading, DhtSensorLog } from './interfaces/dht-sensor.interface';
+import { DhtReading, DhtSensorLog, DhtSensorLogs } from './interfaces/dht-sensor.interface';
 import { CreateDhtSensorLogDto } from './dto/create-dht-sensor.dto';
 
 @Controller('sensors')
@@ -27,7 +27,8 @@ export class DhtSensorController {
   }
 
   @Get('/:id/:hours')
-  async temps(@Param('id') id: string, @Param('hours') hours: string): Promise<DhtSensorLog[] | DhtSensorLog> {
+  async temps(@Param('id') id: string, @Param('hours') hours: string): Promise<DhtSensorLogs | DhtSensorLog> {
+    this.logger.log(`Getting Logs for sensor ${id} for ${hours} hours`);
     return await this.dhtService.getLogs(id, hours);
   }
 

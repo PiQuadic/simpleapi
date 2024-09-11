@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CreateDhtSensorLogDto } from './dto/create-dht-sensor.dto';
-import { DhtReading } from './interfaces/dht-sensor.interface';
-import { DhtSensorLog } from './entities/dht-sensor.entity';
+import { DhtReading, DhtSensorLog, DhtSensorLogs } from './interfaces/dht-sensor.interface';
+import { DhtSensorLog as DhtSensorLogDb } from './entities/dht-sensor.entity';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from "sequelize";
 import { Cron } from '@nestjs/schedule';
@@ -13,8 +13,8 @@ sensor.setMaxRetries(10);
 export class DhtSensorService {
 
   constructor(
-    @InjectModel(DhtSensorLog)
-    private dhtSensorLogRepository: typeof DhtSensorLog,
+    @InjectModel(DhtSensorLogDb)
+    private dhtSensorLogRepository: typeof DhtSensorLogDb,
   ) { }
 
   private readonly validId = ['tempsensor', 'humiditysensor'];
@@ -73,16 +73,24 @@ export class DhtSensorService {
     );
   }
 
-  getLogs(id, hours): Promise<DhtSensorLog[] | DhtSensorLog> {
+  async getLogs(id, hours): Promise<DhtSensorLogs | DhtSensorLog> {
     this.logger.log(`id: ${id} hours: ${hours}`)
+    // retrieve the name of the sensor
+    const name = await this.dhtSensorLogRepository.findOne({
+      attributes: ['name'],
+      where: {
+        sensor_id: {
+          [Op.eq]: this.validId.includes(id) ? id : this.validId[0]
+        }
+      }
+    });
 
     const strFmt = (dt) => {
       return `${dt.getDate()}/${(dt.getMonth() + 1)}-${dt.getHours()}:${dt.getMinutes()}`
     }
-
     const hrs = parseInt(hours);
     if (hrs === 0) {
-      return this.dhtSensorLogRepository.findOne({
+      const data = await this.dhtSensorLogRepository.findOne({
         subQuery: false,
         where: {
           sensor_id: {
@@ -90,6 +98,12 @@ export class DhtSensorService {
           }
         }
       });
+      return {
+        sensor_id: data.sensor_id,
+        name: name.name,
+        value: parseFloat(data.value).toString(),
+        dt: new Date(data.dt)
+      }
     }
 
     const from = new Date();
@@ -99,7 +113,8 @@ export class DhtSensorService {
 
 
     // horrible shortcut to security and leaves only two options
-    return this.dhtSensorLogRepository.findAll({
+    const data = await this.dhtSensorLogRepository.findAll({
+      attributes: ['value', 'updatedAt'],
       where: {
         sensor_id: {
           [Op.eq]: this.validId.includes(id) ? id : this.validId[0]
@@ -108,8 +123,12 @@ export class DhtSensorService {
           [Op.lt]: from,
           [Op.gt]: to
         }
-      }
+      },
     });
+    return {
+      name: name.name,
+      data
+    };
   }
 
   @Cron('*/5 * * * *')

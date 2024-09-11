@@ -10,3 +10,8 @@ export interface DhtSensorLog {
   value: string;
   dt: Date;
 }
+
+export interface DhtSensorLogs {
+  name: string;
+  data: { value: string, dt: Date }[];
+}
