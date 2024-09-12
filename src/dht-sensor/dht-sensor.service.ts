@@ -99,7 +99,7 @@ export class DhtSensorService {
         }
       });
       return {
-        sensor_id: data.sensor_id,
+        id: id,
         name: name.name,
         value: parseFloat(data.value).toString(),
         dt: new Date(data.dt)
@@ -126,6 +126,7 @@ export class DhtSensorService {
       },
     });
     return {
+      id: id,
       name: name.name,
       data
     };

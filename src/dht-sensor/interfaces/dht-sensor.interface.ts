@@ -5,13 +5,14 @@ export interface DhtReading {
 }
 
 export interface DhtSensorLog {
-  sensor_id: string;
+  id: string;
   name: string;
   value: string;
   dt: Date;
 }
 
 export interface DhtSensorLogs {
+  id: string;
   name: string;
   data: { value: string, dt: Date }[];
 }
